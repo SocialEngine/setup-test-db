@@ -1,6 +1,6 @@
 Setup Test DB Command for Laravel
 ====
-[![Latest Stable Version](https://poser.pugx.org/socialengine/setup-test-db/version.png)](https://packagist.org/packages/socialengine/setup-test-db) [![Total Downloads](https://poser.pugx.org/socialengine/setup-test-db/d/total.png)](https://packagist.org/packages/socialengine/setup-test-db)
+[![Latest Stable Version](https://poser.pugx.org/socialengine/setup-test-db/version.png)](https://packagist.org/packages/socialengine/setup-test-db) [![License](https://poser.pugx.org/socialengine/setup-test-db/license.svg)](https://packagist.org/packages/socialengine/setup-test-db)
 
 Integration tests in laravel are great, but the common way to maintain the database is a giant time sink
 of re-seeding and re-migrating for every single test.
