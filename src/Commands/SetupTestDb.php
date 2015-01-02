@@ -49,7 +49,7 @@ class SetupTestDb extends Command
         $this->info("Seeding: <comment>{$database}</comment>");
 
         $options = [
-            '--class' => $config->get("setup-test-db::seed-class")
+            '--class' => $config->get('setup-test-db::seed-class', 'DatabaseSeeder')
         ];
 
         $artisan->call('db:seed', $options);

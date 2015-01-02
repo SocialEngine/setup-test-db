@@ -21,6 +21,6 @@ class ServiceProvider extends LaravelServiceProvider
     public function boot()
     {
         $this->commands('command.setup-test-db');
-        $this->package('socialengine/setup-test-db');
+        $this->package('socialengine/setup-test-db', 'setup-test-db', __DIR__);
     }
 }
