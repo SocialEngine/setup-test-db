@@ -1,5 +1,6 @@
 <?php namespace SocialEngine\TestDbSetup\Commands;
 
+use Schema, DB;
 use Illuminate\Console\Command;
 
 class SetupTestDb extends Command
@@ -10,7 +11,7 @@ class SetupTestDb extends Command
      *
      * @var string
      */
-    protected $name = 'test:setup-db';
+    protected $name = 'db:seed-test';
 
     /**
      * The console command description.
@@ -28,21 +29,30 @@ class SetupTestDb extends Command
     {
         $this->line("<question>[{$this->name}]</question> starting the seeding");
 
-        $defaultConn =  $this->laravel['config']->get('database.default');
+        $config = $this->laravel['config'];
+        $artisan = $this->laravel['artisan'];
+
+        $defaultConn = $config->get('database.default');
+        $database = $config->get('database.connections.' . $defaultConn . '.database');
 
         if ($defaultConn !== 'sqlite') {
             $this->info("Non-file based db detected: <comment>$defaultConn</comment>");
         } else {
-            $dbPath = $this->laravel['config']->get('database.connections.' . $defaultConn . '.database');
-            $this->createDb($dbPath);
+            $this->createDb($database);
+        }
+        $artisan->call('migrate');
+
+        if($config->get("setup-test-db::truncate", false) && $defaultConn !== 'sqlite') {
+            $this->truncateDb($database);
         }
 
-        $this->laravel['artisan']->call('migrate');
+        $this->info("Seeding: <comment>{$database}</comment>");
 
         $options = [
-            '--class' => $this->laravel['config']->get("setup-test-db::seedClass"),
+            '--class' => $config->get("setup-test-db::seed-class")
         ];
-        $this->laravel['artisan']->call('db:seed', $options);
+
+        $artisan->call('db:seed', $options);
         $this->line("<question>[{$this->name}]</question> db seeded!");
     }
 
@@ -50,5 +60,22 @@ class SetupTestDb extends Command
     {
         passthru('rm ' . $dbPath . ' 2>/dev/null');
         passthru('touch ' . $dbPath);
+    }
+
+    /**
+     * @param $database
+     */
+    public function truncateDb($database)
+    {
+        $this->info("Truncating: <comment>{$database}</comment>");
+        // Truncate all tables, except migrations
+        $tables = DB::select('SHOW TABLES');
+        $tables_in_database = "Tables_in_{$database}";
+        foreach ($tables as $table) {
+            if ($table->$tables_in_database == 'migrations') {
+                continue;
+            }
+            DB::table($table->$tables_in_database)->truncate();
+        }
     }
 }

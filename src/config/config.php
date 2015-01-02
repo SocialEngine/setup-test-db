@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'seedClass' => 'DatabaseSeeder'
+    'seed-class' => 'DatabaseSeeder',
+    'truncate' => true
 ];
