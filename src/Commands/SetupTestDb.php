@@ -1,6 +1,6 @@
 <?php namespace SocialEngine\TestDbSetup\Commands;
 
-use Schema, DB;
+use Schema, DB, File;
 use Illuminate\Console\Command;
 
 class SetupTestDb extends Command
@@ -58,8 +58,8 @@ class SetupTestDb extends Command
 
     private function createDb($dbPath)
     {
-        passthru('rm ' . $dbPath . ' 2>/dev/null');
-        passthru('touch ' . $dbPath);
+        File::delete($dbPath);
+        File::put($dbPath, '');
     }
 
     /**
