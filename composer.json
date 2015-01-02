@@ -1,7 +1,8 @@
 {
   "name": "socialengine/setup-test-db",
   "description": "Get efficient with seeding your database for tests in Laravel",
-  "keywords": ["laravel", "autocomplete", "ide", "helper", "phpstorm", "netbeans", "sublime", "codeintel", "phpdoc"],
+  "keywords": ["laravel", "db", "test", "seeding", "seed", "phpunit", "test", "testing", "codeception"],
+  "homepage": "https://github.com/socialengine/setup-test-db",
   "license": "MIT",
   "authors": [
     {
