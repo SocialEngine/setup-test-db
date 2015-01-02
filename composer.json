@@ -1,0 +1,27 @@
+{
+  "name": "socialengine/setup-test-db",
+  "description": "Get efficient with seeding your database for tests in Laravel",
+  "keywords": ["laravel", "autocomplete", "ide", "helper", "phpstorm", "netbeans", "sublime", "codeintel", "phpdoc"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Stepan Mazurov",
+      "email": "stepan@socialengine.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "illuminate/support": "4.x",
+    "illuminate/console": "4.x"
+  },
+
+  "require-dev": {
+    "phpunit/phpunit": "~4.2"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "SocialEngine\\TestDbSetup\\": "src/"
+    }
+  }
+}
