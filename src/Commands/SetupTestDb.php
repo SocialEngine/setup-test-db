@@ -33,7 +33,7 @@ class SetupTestDb extends Command
         $artisan = $this->laravel['artisan'];
 
         $defaultConn = $config->get('database.default');
-        $database = $config->get('database.connections.' . $defaultConn . '.database');
+        $database = $config->get("database.connections.{$defaultConn}.database");
 
         if ($defaultConn !== 'sqlite') {
             $this->info("Non-file based db detected: <comment>$defaultConn</comment>");
@@ -42,7 +42,7 @@ class SetupTestDb extends Command
         }
         $artisan->call('migrate');
 
-        if($config->get("setup-test-db::truncate", false) && $defaultConn !== 'sqlite') {
+        if($config->get('setup-test-db::truncate', false) && $defaultConn !== 'sqlite') {
             $this->truncateDb($database);
         }
 
