@@ -1,6 +1,8 @@
-Setup Test DB Laravel Command & Bootstrap
+Setup Test DB Command for Laravel
 ====
-Integration tests in laravel are great, but the common way to maintain the database is a giant cycle sink
+[![Latest Stable Version](https://poser.pugx.org/socialengine/setup-test-db/version.png)](https://packagist.org/packages/socialengine/setup-test-db) [![Total Downloads](https://poser.pugx.org/socialengine/setup-test-db/d/total.png)](https://packagist.org/packages/socialengine/setup-test-db)
+
+Integration tests in laravel are great, but the common way to maintain the database is a giant time sink
 of re-seeding and re-migrating for every single test.
 
 This command and bootstrap file aims to remove the needless reseeding and migrating (since you're using
@@ -8,9 +10,9 @@ transactions anyways, right?) for every test and instead gives your tests a "cle
 
 Works with `sqlite` and any others supported by Eloquent.
 
+**This automatically truncates the database, so be careful**
 
-
-# Installation
+## Installation
 
 Require this package in composer:
 ```
@@ -31,10 +33,13 @@ Add a `bootstrap/testing.php` or copy from `vendor/socialengine/setup-test-db/bo
 // bootstrap/testing.php
 $testEnv = (getenv('APP_ENV')) ? : 'testing';
 
-passthru("php " . __DIR__ . "/../artisan test:setup-db --env={$testEnv}");
+passthru("php " . __DIR__ . "/../artisan db:seed-test --env={$testEnv}");
 
 require __DIR__ . '/autoload.php';
 ```
+
+**Note: it truncates non-sqlite db, so be careful, watch the env setting and adjust your database.php config
+accordingly**. You can also turn off truncation in the config.
 
 Change your `phpunit` (or any other framework) bootstrap file from `bootstrap/autoload.php` to `bootstrap/testing.php`:
 ```xml
@@ -58,10 +63,10 @@ Finally, run your tests in 1/3 the time they used to.
 You can also publish the config-file to change seeder class used.
 
 ```
-$php artisan config:publish socialengine/setup-test-db
+$ php artisan config:publish socialengine/setup-test-db
 ```
 
-# Further reading and inspiration
+## Further reading and inspiration
 
 Most of this is based on the work outlined by Chris Duell in his
 [Speeding up PHP unit tests 15 times](http://www.chrisduell.com/blog/development/speeding-up-unit-tests-in-php/)
@@ -73,6 +78,6 @@ blog post:
 > testing code. Until I got fed up enough to spend the time on speeding up the tests,
 > **by fifteen times** (and almost halving memory usage).
 
-# License
+## License
 
 MIT
