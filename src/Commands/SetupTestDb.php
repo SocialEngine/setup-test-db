@@ -1,6 +1,5 @@
 <?php namespace SocialEngine\TestDbSetup\Commands;
 
-use Schema, DB, File;
 use Illuminate\Console\Command;
 
 class SetupTestDb extends Command
@@ -29,8 +28,8 @@ class SetupTestDb extends Command
     {
         $this->line("<question>[{$this->name}]</question> starting the seeding");
 
-        $config = $this->laravel['config'];
-        $artisan = $this->laravel['artisan'];
+        $config = $this->config();
+        $artisan = $this->artisan();
 
         $defaultConn = $config->get('database.default');
         $database = $config->get("database.connections.{$defaultConn}.database");
@@ -58,8 +57,9 @@ class SetupTestDb extends Command
 
     private function createDb($dbPath)
     {
-        File::delete($dbPath);
-        File::put($dbPath, '');
+        $file = $this->fileSystem();
+        $file->delete($dbPath);
+        $file->put($dbPath, '');
     }
 
     /**
@@ -67,15 +67,51 @@ class SetupTestDb extends Command
      */
     public function truncateDb($database)
     {
+        $db = $this->db();
         $this->info("Truncating: <comment>{$database}</comment>");
         // Truncate all tables, except migrations
-        $tables = DB::select('SHOW TABLES');
+        $tables = $db->select('SHOW TABLES');
         $tables_in_database = "Tables_in_{$database}";
+
+        $migrationsTable = $this->config()->get('database.migrations');
+
         foreach ($tables as $table) {
-            if ($table->$tables_in_database == 'migrations') {
+            if ($table->$tables_in_database == $migrationsTable) {
                 continue;
             }
-            DB::table($table->$tables_in_database)->truncate();
+            $db->table($table->$tables_in_database)->truncate();
         }
+    }
+
+    /**
+     * @return \Illuminate\Config\Repository
+     */
+    private function config()
+    {
+        return $this->laravel['config'];
+    }
+
+    /**
+     * @return \Illuminate\Console\Application
+     */
+    private function artisan()
+    {
+        return $this->laravel['artisan'];
+    }
+
+    /**
+     * @return \Illuminate\Database\Connection
+     */
+    private function db()
+    {
+        return $this->laravel['db'];
+    }
+
+    /**
+     * @return \Illuminate\Filesystem\Filesystem
+     */
+    private function fileSystem()
+    {
+        return $this->laravel['file'];
     }
 }

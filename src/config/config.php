@@ -2,5 +2,5 @@
 
 return [
     'seed-class' => 'DatabaseSeeder',
-    'truncate' => true
+    'truncate' => false
 ];

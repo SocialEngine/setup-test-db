@@ -13,7 +13,10 @@
   "require": {
     "php": ">=5.4.0",
     "illuminate/support": "4.x",
-    "illuminate/console": "4.x"
+    "illuminate/config": "4.x",
+    "illuminate/console": "4.x",
+    "illuminate/database": "4.x",
+    "illuminate/filesystem": "4.x"
   },
 
   "require-dev": {

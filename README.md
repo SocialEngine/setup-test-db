@@ -10,8 +10,6 @@ transactions anyways, right?) for every test and instead gives your tests a "cle
 
 Works with `sqlite` and any others supported by Eloquent.
 
-**This automatically truncates the database, so be careful**
-
 ## Installation
 
 Require this package in composer:
@@ -38,9 +36,6 @@ passthru("php " . __DIR__ . "/../artisan db:seed-test --env={$testEnv}");
 require __DIR__ . '/autoload.php';
 ```
 
-**Note: it truncates non-sqlite db, so be careful, watch the env setting and adjust your database.php config
-accordingly**. You can also turn off truncation in the config.
-
 Change your `phpunit` (or any other framework) bootstrap file from `bootstrap/autoload.php` to `bootstrap/testing.php`:
 ```xml
 <phpunit backupGlobals="false"
@@ -60,7 +55,7 @@ Remove all the migration stuff from your `TestCase.php`
 
 Finally, run your tests in 1/3 the time they used to.
 
-You can also publish the config-file to change seeder class used.
+You can also publish the config-file to change seeder class used and enable truncation.
 
 ```
 $ php artisan config:publish socialengine/setup-test-db
