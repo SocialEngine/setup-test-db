@@ -41,8 +41,9 @@ class SetupTestDb extends Command
         }
         $artisan->call('migrate');
 
-        if($config->get('setup-test-db::truncate', false) && $defaultConn !== 'sqlite') {
-            $this->truncateDb($database);
+        $truncateMethod = 'truncate' . ucfirst($defaultConn) . 'Db';
+        if($config->get('setup-test-db::truncate', false) && method_exists($this, $truncateMethod)) {
+            $this->$truncateMethod($database);
         }
 
         $this->info("Seeding: <comment>{$database}</comment>");
@@ -65,7 +66,7 @@ class SetupTestDb extends Command
     /**
      * @param $database
      */
-    public function truncateDb($database)
+    public function truncateMysqlDb($database)
     {
         $db = $this->db();
         $this->info("Truncating: <comment>{$database}</comment>");
