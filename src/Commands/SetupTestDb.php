@@ -74,13 +74,14 @@ class SetupTestDb extends Command
         $tables_in_database = "Tables_in_{$database}";
 
         $migrationsTable = $this->config()->get('database.migrations');
-
+        $db->statement('SET FOREIGN_KEY_CHECKS=0;');
         foreach ($tables as $table) {
             if ($table->$tables_in_database == $migrationsTable) {
                 continue;
             }
             $db->table($table->$tables_in_database)->truncate();
         }
+        $db->statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**
