@@ -71,16 +71,17 @@ class SetupTestDb extends Command
         $db = $this->db();
         $this->info("Truncating: <comment>{$database}</comment>");
         // Truncate all tables, except migrations
-        $tables = $db->select('SHOW TABLES');
-        $tables_in_database = "Tables_in_{$database}";
+        $tables =  $db->select('SHOW TABLES');
+        $tablesInDb = "Tables_in_{$database}";
 
         $migrationsTable = $this->config()->get('database.migrations');
         $db->statement('SET FOREIGN_KEY_CHECKS=0;');
         foreach ($tables as $table) {
-            if ($table->$tables_in_database == $migrationsTable) {
+            $table = (array) $table;
+            if ($table[$tablesInDb] == $migrationsTable) {
                 continue;
             }
-            $db->table($table->$tables_in_database)->truncate();
+            $db->table($table[$tablesInDb])->truncate();
         }
         $db->statement('SET FOREIGN_KEY_CHECKS=1;');
     }
