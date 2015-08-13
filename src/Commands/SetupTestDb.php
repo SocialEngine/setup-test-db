@@ -33,15 +33,15 @@ class SetupTestDb extends Command
 
         $defaultConn = $config->get('database.default');
         $database = $config->get("database.connections.{$defaultConn}.database");
-
-        if ($defaultConn !== 'sqlite') {
-            $this->info("Non-file based db detected: <comment>$defaultConn</comment>");
+        $driver = $config->get("database.connections.{$defaultConn}.driver");
+        if ($driver !== 'sqlite') {
+            $this->info("Non-file based db detected: <comment>$driver</comment>");
         } else {
             $this->createDb($database);
         }
         $artisan->call('migrate');
 
-        $truncateMethod = 'truncate' . ucfirst($defaultConn) . 'Db';
+        $truncateMethod = 'truncate' . ucfirst($driver) . 'Db';
         if($config->get('setup-test-db::truncate', false) && method_exists($this, $truncateMethod)) {
             $this->$truncateMethod($database);
         }
