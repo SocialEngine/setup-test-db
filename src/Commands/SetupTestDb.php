@@ -29,7 +29,6 @@ class SetupTestDb extends Command
         $this->line("<question>[{$this->name}]</question> starting the seeding");
 
         $config = $this->config();
-        $artisan = $this->artisan();
 
         $defaultConn = $config->get('database.default');
         $database = $config->get("database.connections.{$defaultConn}.database");
@@ -39,20 +38,20 @@ class SetupTestDb extends Command
         } else {
             $this->createDb($database);
         }
-        $artisan->call('migrate');
+        $this->artisan('migrate');
 
         $truncateMethod = 'truncate' . ucfirst($driver) . 'Db';
-        if($config->get('setup-test-db::truncate', false) && method_exists($this, $truncateMethod)) {
+        if($config->get('setup-test-db.truncate', false) && method_exists($this, $truncateMethod)) {
             $this->$truncateMethod($database);
         }
 
         $this->info("Seeding: <comment>{$database}</comment>");
 
         $options = [
-            '--class' => $config->get('setup-test-db::seed-class', 'DatabaseSeeder')
+            '--class' => $config->get('setup-test-db.seed-class', 'DatabaseSeeder')
         ];
 
-        $artisan->call('db:seed', $options);
+        $this->artisan('db:seed', $options);
         $this->line("<question>[{$this->name}]</question> db seeded!");
     }
 
@@ -95,11 +94,15 @@ class SetupTestDb extends Command
     }
 
     /**
-     * @return \Illuminate\Console\Application
+     * Call artisan command and return code.
+     *
+     * @param string  $command
+     * @param array   $parameters
+     * @return int
      */
-    private function artisan()
+    private function artisan($command, $parameters = [])
     {
-        return $this->laravel['artisan'];
+        return $this->laravel['Illuminate\Contracts\Console\Kernel']->call($command, $parameters);
     }
 
     /**
