@@ -6,11 +6,11 @@ class SetupTestDb extends Command
 {
 
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'db:seed-test';
+    protected $signature = 'db:seed-test';
 
     /**
      * The console command description.
@@ -20,18 +20,46 @@ class SetupTestDb extends Command
     protected $description = 'Sets up and seeds db for testing once per execution to save on re-seeding';
 
     /**
+     * loads env file (.env.something) based on environment set via --env=something.
+     *
+     * @return void
+     */
+	public function reloadEnvironment()
+	{
+        //$this->info("d1" . env('DB_CONNECTION'));
+        $this->info("Reload environment : " . \App::environment());
+		putenv('APP_ENV=' . \App::environment());
+		$this->laravel->make('Illuminate\Foundation\Bootstrap\DetectEnvironment')->bootstrap($this->laravel);
+		$envFile = \App::environmentFile();
+		if($envFile != ".env." . \App::environment()) {
+			$envFile = ".env." . \App::environment();
+		}
+		(new \Dotenv\Dotenv(\App::environmentPath(), $envFile ))->overload();
+		$this->laravel->make('Illuminate\Foundation\Bootstrap\LoadConfiguration')->bootstrap($this->laravel);
+        //$this->info("loaded DB_DATABASE : " . env('DB_DATABASE'));
+        //$this->info("d2" . \App::environmentPath());
+        //$this->info("d2" . \App::environmentFile());
+	}
+
+    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire()
+    public function handle()
     {
-        $this->line("<question>[{$this->name}]</question> starting the seeding");
+        $this->line("<question>[{$this->signature}]</question> starting the seeding");
+
+		$this->reloadEnvironment();
+		
 
         $config = $this->config();
 
         $defaultConn = $config->get('database.default');
+        //$this->info("defaultConn :" . $defaultConn);
         $database = $config->get("database.connections.{$defaultConn}.database");
+        //$this->info("database :" . $database);
+
         $driver = $config->get("database.connections.{$defaultConn}.driver");
         if ($driver !== 'sqlite') {
             $this->info("Non-file based db detected: <comment>$driver</comment>");
@@ -52,11 +80,12 @@ class SetupTestDb extends Command
         ];
 
         $this->artisan('db:seed', $options);
-        $this->line("<question>[{$this->name}]</question> db seeded!");
+        $this->line("<question>[{$this->signature}]</question> db seeded!");
     }
 
     private function createDb($dbPath)
     {
+        //$this->info("Delete: <comment>{$dbPath}</comment>");
         $file = $this->fileSystem();
         $file->delete($dbPath);
         $file->put($dbPath, '');
@@ -118,6 +147,6 @@ class SetupTestDb extends Command
      */
     private function fileSystem()
     {
-        return $this->laravel['file'];
+        return $this->laravel['files'];
     }
 }
