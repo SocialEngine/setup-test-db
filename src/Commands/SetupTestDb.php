@@ -20,28 +20,6 @@ class SetupTestDb extends Command
     protected $description = 'Sets up and seeds db for testing once per execution to save on re-seeding';
 
     /**
-     * loads env file (.env.something) based on environment set via --env=something.
-     *
-     * @return void
-     */
-	public function reloadEnvironment()
-	{
-        //$this->info("d1" . env('DB_CONNECTION'));
-        $this->info("Reload environment : " . \App::environment());
-		putenv('APP_ENV=' . \App::environment());
-		$this->laravel->make('Illuminate\Foundation\Bootstrap\DetectEnvironment')->bootstrap($this->laravel);
-		$envFile = \App::environmentFile();
-		if($envFile != ".env." . \App::environment()) {
-			$envFile = ".env." . \App::environment();
-		}
-		(new \Dotenv\Dotenv(\App::environmentPath(), $envFile ))->overload();
-		$this->laravel->make('Illuminate\Foundation\Bootstrap\LoadConfiguration')->bootstrap($this->laravel);
-        //$this->info("loaded DB_DATABASE : " . env('DB_DATABASE'));
-        //$this->info("d2" . \App::environmentPath());
-        //$this->info("d2" . \App::environmentFile());
-	}
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -49,9 +27,6 @@ class SetupTestDb extends Command
     public function handle()
     {
         $this->line("<question>[{$this->signature}]</question> starting the seeding");
-
-		$this->reloadEnvironment();
-		
 
         $config = $this->config();
 
