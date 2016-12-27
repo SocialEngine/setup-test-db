@@ -6,11 +6,11 @@ class SetupTestDb extends Command
 {
 
     /**
-     * The name and signature of the console command.
+     * The console command name.
      *
      * @var string
      */
-    protected $signature = 'db:seed-test';
+    protected $name = 'db:seed-test';
 
     /**
      * The console command description.
@@ -24,17 +24,14 @@ class SetupTestDb extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function fire()
     {
-        $this->line("<question>[{$this->signature}]</question> starting the seeding");
+        $this->line("<question>[{$this->name}]</question> starting the seeding");
 
         $config = $this->config();
 
         $defaultConn = $config->get('database.default');
-        //$this->info("defaultConn :" . $defaultConn);
         $database = $config->get("database.connections.{$defaultConn}.database");
-        //$this->info("database :" . $database);
-
         $driver = $config->get("database.connections.{$defaultConn}.driver");
         if ($driver !== 'sqlite') {
             $this->info("Non-file based db detected: <comment>$driver</comment>");
@@ -55,12 +52,11 @@ class SetupTestDb extends Command
         ];
 
         $this->artisan('db:seed', $options);
-        $this->line("<question>[{$this->signature}]</question> db seeded!");
+        $this->line("<question>[{$this->name}]</question> db seeded!");
     }
 
     private function createDb($dbPath)
     {
-        //$this->info("Delete: <comment>{$dbPath}</comment>");
         $file = $this->fileSystem();
         $file->delete($dbPath);
         $file->put($dbPath, '');
