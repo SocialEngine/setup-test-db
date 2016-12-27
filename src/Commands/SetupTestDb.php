@@ -118,6 +118,6 @@ class SetupTestDb extends Command
      */
     private function fileSystem()
     {
-        return $this->laravel['file'];
+        return $this->laravel['files'];
     }
 }
